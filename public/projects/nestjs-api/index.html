@@ -1,376 +1,178 @@
-<!DOCTYPE html>
-
-<html><head>
-  <meta charset="utf-8" />
-  
-  
-  
-  
-  <link
-    rel="icon"
-    type="image/png"
-    sizes="16x16"
-    href="/icons/favicon-16x16.png "
-  />
-
-  <link
-    rel="apple-touch-icon"
-    sizes="180x180"
-    href="/icons/apple-touch-icon.png"
-  />
-  <link
-    rel="icon"
-    type="image/png"
-    sizes="32x32"
-    href="/icons/favicon-32x32.png"
-  />
-
-  <link rel="manifest" href="/icons/site.webmanifest " />
-
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Personal site for sharing opinions about software development and showcasing projects. Powered by Hugo." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Roboto:wght@100;400;700;900&display=swap"
-    rel="stylesheet"
-  />
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      font-family: "Roboto", sans-serif;
-    }
-    html,
-    body {
-      height: 100%;
-      overflow-x: hidden;
-      scroll-behavior: smooth;
-    }
-  </style>
-
-  
-  <link rel="stylesheet" href="http://example.org/sass/main.css" />
-  <script src="/js/feather.min.js"></script>
-  
-  
-  <title>fish-dev | NestJS API</title>
-</head>
-<body>
-<nav class="navbar" id="navbar">
-  <ul>
-    <li>
-      <a href="/"><i data-feather="home"></i></a>
-    </li>
-    
-      <li>
-        <a href="/posts/">posts</a>
-      </li>
-    
-      <li>
-        <a href="/projects/">projects</a>
-      </li>
-    
-  </ul>
-</nav>
-<div id="content">
-<section id="main">
-  <article>
-    <div class="single-container">
-      <div class="article-full">
-        <div class="article-title">
-          <h1 id="nestjs-api">NestJS API</h1>
-        </div>
-        <div class="article-content">
-          <p><p>Showcase RESTful API made with NestJS &amp; TypeScript. <a href="https://github.com/pina771/phost-api">GitHub</a></p>
-<p><em>Writeup is currently in progress. Some more details could be added.</em></p>
-<p>Made mainly for backend practice with NestJS &amp; practicing TypeScript. A full CRUD API with authentication &amp; file upload. Really, it&rsquo;s a rudimentary Instagram clone.
-The projects consists of the following stack:</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Language(s)</td>
-<td>TypeScript</td>
-</tr>
-<tr>
-<td>Framework</td>
-<td>NestJS</td>
-</tr>
-<tr>
-<td>Database</td>
-<td>PostgreSQL</td>
-</tr>
-<tr>
-<td>ORM</td>
-<td>Prisma</td>
-</tr>
-<tr>
-<td>File Upload</td>
-<td>Multer</td>
-</tr>
-<tr>
-<td>Authentication</td>
-<td>JWT</td>
-</tr>
-<tr>
-<td>Documentation</td>
-<td>Swagger</td>
-</tr>
-<tr>
-<td>Testing</td>
-<td>Jest &amp; Supertest</td>
-</tr>
-</tbody>
-</table>
-<p>Below are some code examples &amp; explanations that I thought are worth mentioning.</p>
-<h1 id="data-info">Data info</h1>
-<p>The API data is fairly simple. The database consists of 2 tables (<em>so far</em>): users &amp; posts with each table having a few characteristic properties. I have used PostgreSQL as my database of choice. Since I didn&rsquo;t really use ORMs in the past (go raw SQL!), I decided this would be a good opportunity to learn using <a href="https://www.prisma.io/">Prisma</a>.</p>
-<figure class="fig-container">
-  
-  
-  
-    
-  
-  <img src="/projects/nestjs-api/erd_hufccd9a301a11dad8196f17cc4e7c769a_46391_640x0_resize_box_3.png" alt="" />
-  <figcaption>
-    <h4>Entity-relationship diagram generated using PgAdmin 4</h4>
-  </figcaption>
-</figure>
-
-<p>The generated (and slightly altered) <code>prisma.schema</code> file:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ts" data-lang="ts"><span style="display:flex;"><span>model post {
-</span></span><span style="display:flex;"><span>  postId      Int       <span style="color:#8be9fd;font-style:italic">@id</span> <span style="color:#8be9fd;font-style:italic">@default</span>(autoincrement()) <span style="color:#8be9fd;font-style:italic">@map</span>(<span style="color:#f1fa8c">&#34;post_id&#34;</span>)
-</span></span><span style="display:flex;"><span>  userId      Int<span style="color:#ff79c6">?</span>      <span style="color:#8be9fd;font-style:italic">@map</span>(<span style="color:#f1fa8c">&#34;user_id&#34;</span>)
-</span></span><span style="display:flex;"><span>  title       <span style="color:#8be9fd;font-style:italic">String</span>    <span style="color:#8be9fd;font-style:italic">@db</span>.VarChar(<span style="color:#bd93f9">220</span>)
-</span></span><span style="display:flex;"><span>  description <span style="color:#8be9fd;font-style:italic">String</span><span style="color:#ff79c6">?</span>
-</span></span><span style="display:flex;"><span>  photoUrl    <span style="color:#8be9fd;font-style:italic">String</span><span style="color:#ff79c6">?</span>   <span style="color:#8be9fd;font-style:italic">@map</span>(<span style="color:#f1fa8c">&#34;photo_url&#34;</span>) <span style="color:#8be9fd;font-style:italic">@db</span>.VarChar(<span style="color:#bd93f9">120</span>)
-</span></span><span style="display:flex;"><span>  createdAt   DateTime<span style="color:#ff79c6">?</span> <span style="color:#8be9fd;font-style:italic">@default</span>(now()) <span style="color:#8be9fd;font-style:italic">@map</span>(<span style="color:#f1fa8c">&#34;created_at&#34;</span>) <span style="color:#8be9fd;font-style:italic">@db</span>.Timestamp(<span style="color:#bd93f9">6</span>)
-</span></span><span style="display:flex;"><span>  user        user<span style="color:#ff79c6">?</span>     <span style="color:#8be9fd;font-style:italic">@relation</span>(fields<span style="color:#ff79c6">:</span> [userId], references<span style="color:#ff79c6">:</span> [userId], onDelete: <span style="color:#8be9fd">NoAction</span>, onUpdate: <span style="color:#8be9fd">NoAction</span>)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>  @<span style="color:#8be9fd;font-style:italic">@map</span>(<span style="color:#f1fa8c">&#34;posts&#34;</span>)
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>model user {
-</span></span><span style="display:flex;"><span>  userId          Int       <span style="color:#8be9fd;font-style:italic">@id</span> <span style="color:#8be9fd;font-style:italic">@default</span>(autoincrement()) <span style="color:#8be9fd;font-style:italic">@map</span>(<span style="color:#f1fa8c">&#34;user_id&#34;</span>)
-</span></span><span style="display:flex;"><span>  username        <span style="color:#8be9fd;font-style:italic">String</span>    <span style="color:#8be9fd;font-style:italic">@unique</span>(map<span style="color:#ff79c6">:</span> <span style="color:#f1fa8c">&#34;username_uniq&#34;</span>) <span style="color:#8be9fd;font-style:italic">@db</span>.VarChar(<span style="color:#bd93f9">50</span>)
-</span></span><span style="display:flex;"><span>  password        <span style="color:#8be9fd;font-style:italic">String</span>    <span style="color:#8be9fd;font-style:italic">@db</span>.VarChar(<span style="color:#bd93f9">50</span>)
-</span></span><span style="display:flex;"><span>  email           <span style="color:#8be9fd;font-style:italic">String</span>    <span style="color:#8be9fd;font-style:italic">@db</span>.VarChar(<span style="color:#bd93f9">50</span>)
-</span></span><span style="display:flex;"><span>  firstName       <span style="color:#8be9fd;font-style:italic">String</span>    <span style="color:#8be9fd;font-style:italic">@map</span>(<span style="color:#f1fa8c">&#34;first_name&#34;</span>) <span style="color:#8be9fd;font-style:italic">@db</span>.VarChar(<span style="color:#bd93f9">50</span>)
-</span></span><span style="display:flex;"><span>  lastName        <span style="color:#8be9fd;font-style:italic">String</span>    <span style="color:#8be9fd;font-style:italic">@map</span>(<span style="color:#f1fa8c">&#34;last_name&#34;</span>) <span style="color:#8be9fd;font-style:italic">@db</span>.VarChar(<span style="color:#bd93f9">50</span>)
-</span></span><span style="display:flex;"><span>  createdAt       DateTime<span style="color:#ff79c6">?</span> <span style="color:#8be9fd;font-style:italic">@default</span>(now()) <span style="color:#8be9fd;font-style:italic">@map</span>(<span style="color:#f1fa8c">&#34;created_at&#34;</span>) <span style="color:#8be9fd;font-style:italic">@db</span>.Timestamp(<span style="color:#bd93f9">6</span>)
-</span></span><span style="display:flex;"><span>  profilePhotoUrl <span style="color:#8be9fd;font-style:italic">String</span><span style="color:#ff79c6">?</span>   <span style="color:#8be9fd;font-style:italic">@map</span>(<span style="color:#f1fa8c">&#34;profile_photo_url&#34;</span>) <span style="color:#8be9fd;font-style:italic">@db</span>.VarChar(<span style="color:#bd93f9">120</span>)
-</span></span><span style="display:flex;"><span>  bio             <span style="color:#8be9fd;font-style:italic">String</span><span style="color:#ff79c6">?</span>   <span style="color:#8be9fd;font-style:italic">@db</span>.VarChar(<span style="color:#bd93f9">220</span>)
-</span></span><span style="display:flex;"><span>  posts           post[]
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>  @<span style="color:#8be9fd;font-style:italic">@map</span>(<span style="color:#f1fa8c">&#34;users&#34;</span>)
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h1 id="testing">Testing</h1>
-<p>Testing the API is done using Jest &amp; SuperTest. The tests make use of NestJS&rsquo; dependency injection system for easily mocking components. Currently, only tests for the users route exists. Below are shown examples of the implemented tests with explanations. <!-- raw HTML omitted --></p>
-<h2 id="unit-tests">Unit Tests</h2>
-<p>For unit testing, individual components are tested. Their dependencies are mocked. <em>Mocking</em> is creating objects that simulate the behaviour of real objects. Using mocked components, we remove their logic from the test, which gives us an isolated component ready for testing. All tests done in this manner will test only the component logic.</p>
-<h3 id="userscontroller">UsersController</h3>
-<p>Jumping right into the example, the <code>UsersController</code> class has a method for handling <code>GET</code> requests at the <code>/users/{id}</code> endpoint. We can see that it leaves the internal logic to the service. To test this method in a unit test, we can want to mock the <code>usersService.findOne(id)</code> method so that we don&rsquo;t have any external logic during testing.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ts" data-lang="ts"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">@Get</span>(<span style="color:#f1fa8c">&#39;:id&#39;</span>)
-</span></span><span style="display:flex;"><span><span style="color:#ff79c6">async</span> findOne(<span style="color:#8be9fd;font-style:italic">@Param</span>(<span style="color:#f1fa8c">&#39;id&#39;</span>) id: <span style="color:#8be9fd">string</span>)<span style="color:#ff79c6">:</span> Promise&lt;<span style="color:#ff79c6">UserDto</span>&gt; {
-</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">const</span> res <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">await</span> <span style="color:#ff79c6">this</span>.usersService.findOne(<span style="color:#ff79c6">+</span>id);
-</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> (res) <span style="color:#ff79c6">return</span> res;
-</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">throw</span> <span style="color:#ff79c6">new</span> NotFoundException(<span style="color:#f1fa8c">&#39;User does not exist.&#39;</span>);
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>Nest provides a breadth of testing utilities. Using the <code>Test</code> class and its method <code>createTestingModule</code>. The method takes a metadata argument and returns a <code>TestingModule</code> instance. We can call the <code>compile()</code> method on the module which will bootstrap and return a module ready for testing.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;"><code class="language-ts" data-lang="ts"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span>describe(<span style="color:#f1fa8c">&#39;UsersController&#39;</span>, () <span style="color:#ff79c6">=&gt;</span> {
-</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>  <span style="color:#8be9fd;font-style:italic">let</span> usersController: <span style="color:#8be9fd">UsersController</span>;
-</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>  <span style="color:#8be9fd;font-style:italic">let</span> usersService: <span style="color:#8be9fd">UsersService</span>;
-</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>
-</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>  beforeEach(<span style="color:#ff79c6">async</span> () <span style="color:#ff79c6">=&gt;</span> {
-</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>    <span style="color:#ff79c6">const</span> <span style="color:#ff79c6">module</span>Ref <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">await</span> Test.createTestingModule({
-</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>      controllers<span style="color:#ff79c6">:</span> [UsersController],
-</span></span><span style="display:flex; background-color:#3d3f4a"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>      providers<span style="color:#ff79c6">:</span> [
-</span></span><span style="display:flex; background-color:#3d3f4a"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>        {
-</span></span><span style="display:flex; background-color:#3d3f4a"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>          provide: <span style="color:#8be9fd">UsersService</span>,
-</span></span><span style="display:flex; background-color:#3d3f4a"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>          useValue<span style="color:#ff79c6">:</span> {
-</span></span><span style="display:flex; background-color:#3d3f4a"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>            findAll: <span style="color:#8be9fd">jest.fn</span>().mockResolvedValue(testShortUsers),
-</span></span><span style="display:flex; background-color:#3d3f4a"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>            findOne: <span style="color:#8be9fd">jest.fn</span>().mockResolvedValue(testUserDto),
-</span></span><span style="display:flex; background-color:#3d3f4a"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>            create: <span style="color:#8be9fd">jest.fn</span>().mockResolvedValue(testUser1),
-</span></span><span style="display:flex; background-color:#3d3f4a"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>            remove: <span style="color:#8be9fd">jest.fn</span>().mockResolvedValue(<span style="color:#ff79c6">true</span>),
-</span></span><span style="display:flex; background-color:#3d3f4a"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span>            update: <span style="color:#8be9fd">jest.fn</span>(),
-</span></span><span style="display:flex; background-color:#3d3f4a"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span><span>          },
-</span></span><span style="display:flex; background-color:#3d3f4a"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span><span>        },
-</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span><span>      ],
-</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span><span>    }).compile();
-</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21</span><span>
-</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22</span><span>    usersController <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">module</span>Ref.get&lt;<span style="color:#ff79c6">UsersController</span>&gt;(UsersController);
-</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23</span><span>    usersService <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">module</span>Ref.get&lt;<span style="color:#ff79c6">UsersService</span>&gt;(UsersService);
-</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24</span><span>  });
-</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25</span><span>
-</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26</span><span>...
-</span></span></code></pre></div><p>In the above code block, we can see the usual NestJS module metadata. For this (testing) module, we only need the <code>UsersController</code> and <code>UsersService</code>. We use the actual <code>UsersController</code> implementation, while for the <code>UsersService</code> we provide a mock implementation. There are a few ways to accomplish this. I provided the mocked provider directly inside the metadata. You can also use the <code>overrideProvider</code> method as shown below:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ts" data-lang="ts"><span style="display:flex;"><span>...
-</span></span><span style="display:flex;"><span><span style="color:#ff79c6">const</span> mockUsersService <span style="color:#ff79c6">=</span> {
-</span></span><span style="display:flex;"><span>  findAll: <span style="color:#8be9fd">jest.fn</span>().mockResolvedValue(testShortUsers),
-</span></span><span style="display:flex;"><span>  findOne: <span style="color:#8be9fd">jest.fn</span>().mockResolvedValue(testUserDto),
-</span></span><span style="display:flex;"><span>  create: <span style="color:#8be9fd">jest.fn</span>().mockResolvedValue(testUser1),
-</span></span><span style="display:flex;"><span>  remove: <span style="color:#8be9fd">jest.fn</span>().mockResolvedValue(<span style="color:#ff79c6">true</span>),
-</span></span><span style="display:flex;"><span>  update: <span style="color:#8be9fd">jest.fn</span>(),
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span><span style="color:#ff79c6">const</span> <span style="color:#ff79c6">module</span>Ref <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">await</span> Test.createTestingModule({
-</span></span><span style="display:flex;"><span>  controllers<span style="color:#ff79c6">:</span> [UsersController],
-</span></span><span style="display:flex;"><span>  providers<span style="color:#ff79c6">:</span> [UsersService]
-</span></span><span style="display:flex;"><span>}).overrideProvider(UsersService)
-</span></span><span style="display:flex;"><span>  .useValue(mockUsersService)
-</span></span><span style="display:flex;"><span>  .compile();
-</span></span><span style="display:flex;"><span>...
+<!doctype html><html><head><meta charset=utf-8><link rel=icon type=image/png sizes=16x16 href=/icons/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/icons/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/icons/favicon-32x32.png><link rel=manifest href=/icons/site.webmanifest><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Personal site for sharing opinions about software development and showcasing projects. Powered by Hugo."><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Roboto:wght@100;400;700;900&display=swap" rel=stylesheet><style>*{margin:0;padding:0;font-family:roboto,sans-serif}html,body{height:100%;overflow-x:hidden;scroll-behavior:smooth}</style><link rel=stylesheet href=http://example.org/sass/main.css><script src=/js/feather.min.js></script><title>fish-dev | NestJS API</title></head><body><nav class=navbar id=navbar><ul><li><a href=/><i data-feather=home></i></a></li><li><a href=/posts/>posts</a></li><li><a href=/projects/>projects</a></li></ul></nav><div id=content><section id=main><article><div class=single-container><div class=article-full><div class=article-title><h1 id=nestjs-api>NestJS API</h1></div><div class=article-content><p><p>Showcase RESTful API made with NestJS & TypeScript. <a href=https://github.com/pina771/phost-api>GitHub</a></p><p><em>Writeup is currently in progress. Some more details could be added.</em></p><p>Made mainly for backend practice with NestJS & practicing TypeScript. A full CRUD API with authentication & file upload. Really, it&rsquo;s a rudimentary Instagram clone.
+The projects consists of the following stack:</p><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td>Language(s)</td><td>TypeScript</td></tr><tr><td>Framework</td><td>NestJS</td></tr><tr><td>Database</td><td>PostgreSQL</td></tr><tr><td>ORM</td><td>Prisma</td></tr><tr><td>File Upload</td><td>Multer</td></tr><tr><td>Authentication</td><td>JWT</td></tr><tr><td>Documentation</td><td>Swagger</td></tr><tr><td>Testing</td><td>Jest & Supertest</td></tr></tbody></table><p>Below are some code examples & explanations that I thought are worth mentioning.</p><h1 id=data-info>Data info</h1><p>The API data is fairly simple. The database consists of 2 tables (<em>so far</em>): users & posts with each table having a few characteristic properties. I have used PostgreSQL as my database of choice. Since I didn&rsquo;t really use ORMs in the past (go raw SQL!), I decided this would be a good opportunity to learn using <a href=https://www.prisma.io/>Prisma</a>.</p><figure class=fig-container><img src=/projects/nestjs-api/erd_hufccd9a301a11dad8196f17cc4e7c769a_46391_640x0_resize_box_3.png alt><figcaption><h4>Entity-relationship diagram generated using PgAdmin 4</h4></figcaption></figure><p>The generated (and slightly altered) <code>prisma.schema</code> file:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=display:flex><span>model post {
+</span></span><span style=display:flex><span>  postId      Int       <span style=color:#8be9fd;font-style:italic>@id</span> <span style=color:#8be9fd;font-style:italic>@default</span>(autoincrement()) <span style=color:#8be9fd;font-style:italic>@map</span>(<span style=color:#f1fa8c>&#34;post_id&#34;</span>)
+</span></span><span style=display:flex><span>  userId      Int<span style=color:#ff79c6>?</span>      <span style=color:#8be9fd;font-style:italic>@map</span>(<span style=color:#f1fa8c>&#34;user_id&#34;</span>)
+</span></span><span style=display:flex><span>  title       <span style=color:#8be9fd;font-style:italic>String</span>    <span style=color:#8be9fd;font-style:italic>@db</span>.VarChar(<span style=color:#bd93f9>220</span>)
+</span></span><span style=display:flex><span>  description <span style=color:#8be9fd;font-style:italic>String</span><span style=color:#ff79c6>?</span>
+</span></span><span style=display:flex><span>  photoUrl    <span style=color:#8be9fd;font-style:italic>String</span><span style=color:#ff79c6>?</span>   <span style=color:#8be9fd;font-style:italic>@map</span>(<span style=color:#f1fa8c>&#34;photo_url&#34;</span>) <span style=color:#8be9fd;font-style:italic>@db</span>.VarChar(<span style=color:#bd93f9>120</span>)
+</span></span><span style=display:flex><span>  createdAt   DateTime<span style=color:#ff79c6>?</span> <span style=color:#8be9fd;font-style:italic>@default</span>(now()) <span style=color:#8be9fd;font-style:italic>@map</span>(<span style=color:#f1fa8c>&#34;created_at&#34;</span>) <span style=color:#8be9fd;font-style:italic>@db</span>.Timestamp(<span style=color:#bd93f9>6</span>)
+</span></span><span style=display:flex><span>  user        user<span style=color:#ff79c6>?</span>     <span style=color:#8be9fd;font-style:italic>@relation</span>(fields<span style=color:#ff79c6>:</span> [userId], references<span style=color:#ff79c6>:</span> [userId], onDelete: <span style=color:#8be9fd>NoAction</span>, onUpdate: <span style=color:#8be9fd>NoAction</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  @<span style=color:#8be9fd;font-style:italic>@map</span>(<span style=color:#f1fa8c>&#34;posts&#34;</span>)
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>model user {
+</span></span><span style=display:flex><span>  userId          Int       <span style=color:#8be9fd;font-style:italic>@id</span> <span style=color:#8be9fd;font-style:italic>@default</span>(autoincrement()) <span style=color:#8be9fd;font-style:italic>@map</span>(<span style=color:#f1fa8c>&#34;user_id&#34;</span>)
+</span></span><span style=display:flex><span>  username        <span style=color:#8be9fd;font-style:italic>String</span>    <span style=color:#8be9fd;font-style:italic>@unique</span>(map<span style=color:#ff79c6>:</span> <span style=color:#f1fa8c>&#34;username_uniq&#34;</span>) <span style=color:#8be9fd;font-style:italic>@db</span>.VarChar(<span style=color:#bd93f9>50</span>)
+</span></span><span style=display:flex><span>  password        <span style=color:#8be9fd;font-style:italic>String</span>    <span style=color:#8be9fd;font-style:italic>@db</span>.VarChar(<span style=color:#bd93f9>50</span>)
+</span></span><span style=display:flex><span>  email           <span style=color:#8be9fd;font-style:italic>String</span>    <span style=color:#8be9fd;font-style:italic>@db</span>.VarChar(<span style=color:#bd93f9>50</span>)
+</span></span><span style=display:flex><span>  firstName       <span style=color:#8be9fd;font-style:italic>String</span>    <span style=color:#8be9fd;font-style:italic>@map</span>(<span style=color:#f1fa8c>&#34;first_name&#34;</span>) <span style=color:#8be9fd;font-style:italic>@db</span>.VarChar(<span style=color:#bd93f9>50</span>)
+</span></span><span style=display:flex><span>  lastName        <span style=color:#8be9fd;font-style:italic>String</span>    <span style=color:#8be9fd;font-style:italic>@map</span>(<span style=color:#f1fa8c>&#34;last_name&#34;</span>) <span style=color:#8be9fd;font-style:italic>@db</span>.VarChar(<span style=color:#bd93f9>50</span>)
+</span></span><span style=display:flex><span>  createdAt       DateTime<span style=color:#ff79c6>?</span> <span style=color:#8be9fd;font-style:italic>@default</span>(now()) <span style=color:#8be9fd;font-style:italic>@map</span>(<span style=color:#f1fa8c>&#34;created_at&#34;</span>) <span style=color:#8be9fd;font-style:italic>@db</span>.Timestamp(<span style=color:#bd93f9>6</span>)
+</span></span><span style=display:flex><span>  profilePhotoUrl <span style=color:#8be9fd;font-style:italic>String</span><span style=color:#ff79c6>?</span>   <span style=color:#8be9fd;font-style:italic>@map</span>(<span style=color:#f1fa8c>&#34;profile_photo_url&#34;</span>) <span style=color:#8be9fd;font-style:italic>@db</span>.VarChar(<span style=color:#bd93f9>120</span>)
+</span></span><span style=display:flex><span>  bio             <span style=color:#8be9fd;font-style:italic>String</span><span style=color:#ff79c6>?</span>   <span style=color:#8be9fd;font-style:italic>@db</span>.VarChar(<span style=color:#bd93f9>220</span>)
+</span></span><span style=display:flex><span>  posts           post[]
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  @<span style=color:#8be9fd;font-style:italic>@map</span>(<span style=color:#f1fa8c>&#34;users&#34;</span>)
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h1 id=testing>Testing</h1><p>Testing the API is done using Jest & SuperTest. The tests make use of NestJS&rsquo; dependency injection system for easily mocking components. Currently, only tests for the users route exists. Below are shown examples of the implemented tests with explanations.</p><h2 id=unit-tests>Unit Tests</h2><p>For unit testing, individual components are tested. Their dependencies are mocked. <em>Mocking</em> is creating objects that simulate the behaviour of real objects. Using mocked components, we remove their logic from the test, which gives us an isolated component ready for testing. All tests done in this manner will test only the component logic.</p><h3 id=userscontroller>UsersController</h3><p>Jumping right into the example, the <code>UsersController</code> class has a method for handling <code>GET</code> requests at the <code>/users/{id}</code> endpoint. We can see that it leaves the internal logic to the service. To test this method in a unit test, we can want to mock the <code>usersService.findOne(id)</code> method so that we don&rsquo;t have any external logic during testing.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=display:flex><span><span style=color:#8be9fd;font-style:italic>@Get</span>(<span style=color:#f1fa8c>&#39;:id&#39;</span>)
+</span></span><span style=display:flex><span><span style=color:#ff79c6>async</span> findOne(<span style=color:#8be9fd;font-style:italic>@Param</span>(<span style=color:#f1fa8c>&#39;id&#39;</span>) id: <span style=color:#8be9fd>string</span>)<span style=color:#ff79c6>:</span> Promise&lt;<span style=color:#ff79c6>UserDto</span>&gt; {
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>const</span> res <span style=color:#ff79c6>=</span> <span style=color:#ff79c6>await</span> <span style=color:#ff79c6>this</span>.usersService.findOne(<span style=color:#ff79c6>+</span>id);
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>if</span> (res) <span style=color:#ff79c6>return</span> res;
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>else</span> <span style=color:#ff79c6>throw</span> <span style=color:#ff79c6>new</span> NotFoundException(<span style=color:#f1fa8c>&#39;User does not exist.&#39;</span>);
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Nest provides a breadth of testing utilities. Using the <code>Test</code> class and its method <code>createTestingModule</code>. The method takes a metadata argument and returns a <code>TestingModule</code> instance. We can call the <code>compile()</code> method on the module which will bootstrap and return a module ready for testing.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-ts data-lang=ts><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span>describe(<span style=color:#f1fa8c>&#39;UsersController&#39;</span>, () <span style=color:#ff79c6>=&gt;</span> {
+</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span>  <span style=color:#8be9fd;font-style:italic>let</span> usersController: <span style=color:#8be9fd>UsersController</span>;
+</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span>  <span style=color:#8be9fd;font-style:italic>let</span> usersService: <span style=color:#8be9fd>UsersService</span>;
+</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span><span>
+</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span><span>  beforeEach(<span style=color:#ff79c6>async</span> () <span style=color:#ff79c6>=&gt;</span> {
+</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span><span>    <span style=color:#ff79c6>const</span> <span style=color:#ff79c6>module</span>Ref <span style=color:#ff79c6>=</span> <span style=color:#ff79c6>await</span> Test.createTestingModule({
+</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span><span>      controllers<span style=color:#ff79c6>:</span> [UsersController],
+</span></span><span style=display:flex;background-color:#3d3f4a><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span><span>      providers<span style=color:#ff79c6>:</span> [
+</span></span><span style=display:flex;background-color:#3d3f4a><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span><span>        {
+</span></span><span style=display:flex;background-color:#3d3f4a><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span><span>          provide: <span style=color:#8be9fd>UsersService</span>,
+</span></span><span style=display:flex;background-color:#3d3f4a><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11</span><span>          useValue<span style=color:#ff79c6>:</span> {
+</span></span><span style=display:flex;background-color:#3d3f4a><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12</span><span>            findAll: <span style=color:#8be9fd>jest.fn</span>().mockResolvedValue(testShortUsers),
+</span></span><span style=display:flex;background-color:#3d3f4a><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13</span><span>            findOne: <span style=color:#8be9fd>jest.fn</span>().mockResolvedValue(testUserDto),
+</span></span><span style=display:flex;background-color:#3d3f4a><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14</span><span>            create: <span style=color:#8be9fd>jest.fn</span>().mockResolvedValue(testUser1),
+</span></span><span style=display:flex;background-color:#3d3f4a><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15</span><span>            remove: <span style=color:#8be9fd>jest.fn</span>().mockResolvedValue(<span style=color:#ff79c6>true</span>),
+</span></span><span style=display:flex;background-color:#3d3f4a><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16</span><span>            update: <span style=color:#8be9fd>jest.fn</span>(),
+</span></span><span style=display:flex;background-color:#3d3f4a><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">17</span><span>          },
+</span></span><span style=display:flex;background-color:#3d3f4a><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">18</span><span>        },
+</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">19</span><span>      ],
+</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">20</span><span>    }).compile();
+</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">21</span><span>
+</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">22</span><span>    usersController <span style=color:#ff79c6>=</span> <span style=color:#ff79c6>module</span>Ref.get&lt;<span style=color:#ff79c6>UsersController</span>&gt;(UsersController);
+</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">23</span><span>    usersService <span style=color:#ff79c6>=</span> <span style=color:#ff79c6>module</span>Ref.get&lt;<span style=color:#ff79c6>UsersService</span>&gt;(UsersService);
+</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">24</span><span>  });
+</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">25</span><span>
+</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">26</span><span>...
+</span></span></code></pre></div><p>In the above code block, we can see the usual NestJS module metadata. For this (testing) module, we only need the <code>UsersController</code> and <code>UsersService</code>. We use the actual <code>UsersController</code> implementation, while for the <code>UsersService</code> we provide a mock implementation. There are a few ways to accomplish this. I provided the mocked provider directly inside the metadata. You can also use the <code>overrideProvider</code> method as shown below:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=display:flex><span>...
+</span></span><span style=display:flex><span><span style=color:#ff79c6>const</span> mockUsersService <span style=color:#ff79c6>=</span> {
+</span></span><span style=display:flex><span>  findAll: <span style=color:#8be9fd>jest.fn</span>().mockResolvedValue(testShortUsers),
+</span></span><span style=display:flex><span>  findOne: <span style=color:#8be9fd>jest.fn</span>().mockResolvedValue(testUserDto),
+</span></span><span style=display:flex><span>  create: <span style=color:#8be9fd>jest.fn</span>().mockResolvedValue(testUser1),
+</span></span><span style=display:flex><span>  remove: <span style=color:#8be9fd>jest.fn</span>().mockResolvedValue(<span style=color:#ff79c6>true</span>),
+</span></span><span style=display:flex><span>  update: <span style=color:#8be9fd>jest.fn</span>(),
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span><span style=color:#ff79c6>const</span> <span style=color:#ff79c6>module</span>Ref <span style=color:#ff79c6>=</span> <span style=color:#ff79c6>await</span> Test.createTestingModule({
+</span></span><span style=display:flex><span>  controllers<span style=color:#ff79c6>:</span> [UsersController],
+</span></span><span style=display:flex><span>  providers<span style=color:#ff79c6>:</span> [UsersService]
+</span></span><span style=display:flex><span>}).overrideProvider(UsersService)
+</span></span><span style=display:flex><span>  .useValue(mockUsersService)
+</span></span><span style=display:flex><span>  .compile();
+</span></span><span style=display:flex><span>...
 </span></span></code></pre></div><p>Looking at the controller function <code>findOne</code> (<em>at top of the chapter</em>), we can create two test cases. The first one is if everything proceeds as it should: the service finds the specified user in the database and returns it to the controller. In that case, the controller function should return a <code>UserDto</code>.
-The other is if there is no user with the ID specified in the endpoint, in which case the function should throw a <code>NotFoundException</code>. For the second case we create a new mock for the <code>usersService.findOne(id)</code> function that returns <code>null</code>. We can do this using the <code>jest.SpyOn</code> where we provide a mocked implementation. In the test we catch the error and determine its instance.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ts" data-lang="ts"><span style="display:flex;"><span>describe(<span style="color:#f1fa8c">&#34;GET /users/:id&#34;</span>, () <span style="color:#ff79c6">=&gt;</span> {
-</span></span><span style="display:flex;"><span>  it(<span style="color:#f1fa8c">&#34;Should return with &#34;</span>, <span style="color:#ff79c6">async</span> () <span style="color:#ff79c6">=&gt;</span> {
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">await</span> expect(usersController.findOne(<span style="color:#f1fa8c">&#34;5&#34;</span>)).resolves.toBe(testUser1);
-</span></span><span style="display:flex;"><span>  });
-</span></span><span style="display:flex;"><span>  it(<span style="color:#f1fa8c">&#34;Should throw a NotFoundException when there is no user&#34;</span>, <span style="color:#ff79c6">async</span> () <span style="color:#ff79c6">=&gt;</span> {
-</span></span><span style="display:flex;"><span>    jest
-</span></span><span style="display:flex;"><span>      .spyOn(usersService, <span style="color:#f1fa8c">&#34;findOne&#34;</span>)
-</span></span><span style="display:flex;"><span>      .mockImplementation(<span style="color:#ff79c6">async</span> (id: <span style="color:#8be9fd">number</span>) <span style="color:#ff79c6">=&gt;</span> {
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">null</span>;
-</span></span><span style="display:flex;"><span>      });
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">try</span> {
-</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">await</span> usersController.findOne(<span style="color:#f1fa8c">&#34;5&#34;</span>);
-</span></span><span style="display:flex;"><span>    } <span style="color:#ff79c6">catch</span> (e) {
-</span></span><span style="display:flex;"><span>      expect(e).toBeInstanceOf(NotFoundException);
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>  });
-</span></span><span style="display:flex;"><span>});
-</span></span></code></pre></div><h3 id="usersservice">UsersService</h3>
-<p>Here, we will focus on the <code>create</code> method for creating a new user. The method itself can result in two distinct behaviours. If the username is not already taken, the service will call upon the <code>PrismaService</code> to persist the data into the DB. If it is already taken, the <code>PrismaService</code> will throw a known exception. The <code>create</code> method catches the exception and processes it by deleting the uploaded picture. It will throw a <code>ConflictException</code> which will cause Nest to return a 409 response to the HTTP request.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ts" data-lang="ts"><span style="display:flex;"><span><span style="color:#ff79c6">async</span> create(createUserDto: <span style="color:#8be9fd">CreateUserDto</span>, profilePhotoUrl: <span style="color:#8be9fd">string</span>) {
-</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">const</span> dto <span style="color:#ff79c6">=</span> { ...createUserDto, profilePhotoUrl: <span style="color:#8be9fd">profilePhotoUrl</span> };
-</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">try</span> {
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">await</span> <span style="color:#ff79c6">this</span>.prismaService.user.create({ data: <span style="color:#8be9fd">dto</span> });
-</span></span><span style="display:flex;"><span>  } <span style="color:#ff79c6">catch</span> (e) {
-</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// NOTE: If the user already exists, Prisma throws a ClientKnownRequestError
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#6272a4">// with the P2002 code. In this case we need to delete the image that Multer saved
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#6272a4">// and return a exception.
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">if</span> (e <span style="color:#ff79c6">instanceof</span> Prisma.PrismaClientKnownRequestError) {
-</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">if</span> (e.code <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#39;P2002&#39;</span>) {
-</span></span><span style="display:flex;"><span>        unlink(<span style="color:#f1fa8c">`uploads/</span><span style="color:#f1fa8c">${</span>profilePhotoUrl<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">`</span>, (err) <span style="color:#ff79c6">=&gt;</span> {
-</span></span><span style="display:flex;"><span>          <span style="color:#ff79c6">if</span> (err) <span style="color:#ff79c6">throw</span> err;
-</span></span><span style="display:flex;"><span>          <span style="color:#ff79c6">else</span> console.log(<span style="color:#f1fa8c">`uploads/</span><span style="color:#f1fa8c">${</span>profilePhotoUrl<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c"> deleted.`</span>);
-</span></span><span style="display:flex;"><span>        });
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">throw</span> <span style="color:#ff79c6">new</span> ConflictException(<span style="color:#f1fa8c">&#39;Username already exists.&#39;</span>);
-</span></span><span style="display:flex;"><span>      }
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>  }
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>The test below shows how to test the service behaviour if the username is already taken. Again, we make use of the <code>jest.SpyOn()</code> function, however here we assign it to a constant which can be used for assertions. We mock the <code>fs.unlink</code> function since it is used to delete the image. The same is done for the <code>prismaService.user.create</code> function. We mock the implementation so that it throws the expected error (<em>which we define somewhere earlier in the test</em>). Since we know that <code>PrismaService</code> will throw an exception, we expect the <code>UsersService</code> to call <code>unlink</code> and throw a <code>ConflictException</code>.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ts" data-lang="ts"><span style="display:flex;"><span>...
-</span></span><span style="display:flex;"><span><span style="color:#ff79c6">const</span> prismaErrorMock <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> PrismaClientKnownRequestError(<span style="color:#f1fa8c">&#39;&#39;</span>, <span style="color:#f1fa8c">&#39;P2002&#39;</span>, <span style="color:#f1fa8c">&#39;&#39;</span>);
-</span></span><span style="display:flex;"><span>...
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>describe(<span style="color:#f1fa8c">&#39;Create&#39;</span>, () <span style="color:#ff79c6">=&gt;</span> {
-</span></span><span style="display:flex;"><span>  ...
-</span></span><span style="display:flex;"><span>  it(<span style="color:#f1fa8c">&#39;Should throw a ConflictException if username is taken.&#39;</span>, <span style="color:#ff79c6">async</span> () <span style="color:#ff79c6">=&gt;</span> {
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">const</span> params <span style="color:#ff79c6">=</span> { ...testCreateUserDto, profilePhotoUrl: <span style="color:#8be9fd">testPhotoUrl</span> };
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">const</span> fsSpy <span style="color:#ff79c6">=</span> jest.spyOn(fs, <span style="color:#f1fa8c">&#39;unlink&#39;</span>).mockImplementation(() <span style="color:#ff79c6">=&gt;</span> {
-</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">true</span>;
-</span></span><span style="display:flex;"><span>    });
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">const</span> dbSpy <span style="color:#ff79c6">=</span> jest
-</span></span><span style="display:flex;"><span>      .spyOn(prismaService.user, <span style="color:#f1fa8c">&#39;create&#39;</span>)
-</span></span><span style="display:flex;"><span>      .mockImplementationOnce((data) <span style="color:#ff79c6">=&gt;</span> {
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">throw</span> prismaErrorMock;
-</span></span><span style="display:flex;"><span>      });
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">try</span> {
-</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">await</span> usersService.create(testCreateUserDto, testPhotoUrl);
-</span></span><span style="display:flex;"><span>    } <span style="color:#ff79c6">catch</span> (e) {
-</span></span><span style="display:flex;"><span>      expect(dbSpy).toHaveBeenCalledWith({ data: <span style="color:#8be9fd">params</span> });
-</span></span><span style="display:flex;"><span>      expect(fsSpy).toHaveBeenCalled();
-</span></span><span style="display:flex;"><span>      expect(e).toBeInstanceOf(ConflictException);
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>  });
-</span></span><span style="display:flex;"><span>});
-</span></span></code></pre></div><h1 id="documentation">Documentation</h1>
-<p>Documentation is done using the NestJS Swagger module. The documentation generated conforms to the <em>OpenAPI</em> specification &amp; can be exported to other formats such as JSON or YAML. The module provides annotations that we can use for API endpoints &amp; DTOs. We can see a couple of them below.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ts" data-lang="ts"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">@Get</span>(<span style="color:#f1fa8c">&#39;:id&#39;</span>)
-</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">@ApiResponse</span>({
-</span></span><span style="display:flex;"><span>  status: <span style="color:#8be9fd">200</span>,
-</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">type</span><span style="color:#ff79c6">:</span> UserDto,
-</span></span><span style="display:flex;"><span>  description<span style="color:#ff79c6">:</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#39;Returns the general info (UserDto) about the user specified in the parameter.&#39;</span>,
-</span></span><span style="display:flex;"><span>})
-</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">@ApiResponse</span>({
-</span></span><span style="display:flex;"><span>  status: <span style="color:#8be9fd">404</span>,
-</span></span><span style="display:flex;"><span>  description<span style="color:#ff79c6">:</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;If there is no user with the defined ID, the API responds with a 404 that has the message &#39;User not found.&#39;&#34;</span>,
-</span></span><span style="display:flex;"><span>})
-</span></span><span style="display:flex;"><span><span style="color:#ff79c6">async</span> findOne(<span style="color:#8be9fd;font-style:italic">@Param</span>(<span style="color:#f1fa8c">&#39;id&#39;</span>) id: <span style="color:#8be9fd">string</span>)<span style="color:#ff79c6">:</span> Promise&lt;<span style="color:#ff79c6">UserDto</span>&gt; {
-</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">/* ... */</span>
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ts" data-lang="ts"><span style="display:flex;"><span><span style="color:#ff79c6">export</span> <span style="color:#ff79c6">class</span> UserDto {
-</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd;font-style:italic">@ApiProperty</span>()
-</span></span><span style="display:flex;"><span>  userId: <span style="color:#8be9fd">number</span>;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd;font-style:italic">@ApiProperty</span>()
-</span></span><span style="display:flex;"><span>  username: <span style="color:#8be9fd">string</span>;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd;font-style:italic">@ApiProperty</span>()
-</span></span><span style="display:flex;"><span>  email: <span style="color:#8be9fd">string</span>;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd;font-style:italic">@ApiProperty</span>()
-</span></span><span style="display:flex;"><span>  firstName: <span style="color:#8be9fd">string</span>;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd;font-style:italic">@ApiProperty</span>()
-</span></span><span style="display:flex;"><span>  lastName: <span style="color:#8be9fd">string</span>;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd;font-style:italic">@ApiProperty</span>({
-</span></span><span style="display:flex;"><span>    description<span style="color:#ff79c6">:</span>
-</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Contains the name of the profile photo in the /uploads folder.&#34;</span>,
-</span></span><span style="display:flex;"><span>  })
-</span></span><span style="display:flex;"><span>  profilePhotoUrl: <span style="color:#8be9fd">string</span>;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd;font-style:italic">@ApiProperty</span>()
-</span></span><span style="display:flex;"><span>  bio: <span style="color:#8be9fd">string</span>;
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><!-- raw HTML omitted --></p>
-        </div>
-      </div>
-      <div class="toc-container">
-
-<aside class="table-of-contents">
-  <h3>Contents:</h3>
-  <header>
-    <a href="#nestjs-api">
-      <h3>NestJS API</h3>
-    </a>
-  </header>
-  <nav id="TableOfContents">
-  <ul>
-    <li><a href="#data-info">Data info</a></li>
-    <li><a href="#testing">Testing</a>
-      <ul>
-        <li><a href="#unit-tests">Unit Tests</a>
-          <ul>
-            <li><a href="#userscontroller">UsersController</a></li>
-            <li><a href="#usersservice">UsersService</a></li>
-          </ul>
-        </li>
-      </ul>
-    </li>
-    <li><a href="#documentation">Documentation</a></li>
-  </ul>
-</nav>
-</aside>
-
-</div>
-    </div>
-  </article>
-</section>
-</div><script src="/js/navbar.js"></script>
-
-<script>
-  feather.replace();
-</script>
-</body>
-</html>
+The other is if there is no user with the ID specified in the endpoint, in which case the function should throw a <code>NotFoundException</code>. For the second case we create a new mock for the <code>usersService.findOne(id)</code> function that returns <code>null</code>. We can do this using the <code>jest.SpyOn</code> where we provide a mocked implementation. In the test we catch the error and determine its instance.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=display:flex><span>describe(<span style=color:#f1fa8c>&#34;GET /users/:id&#34;</span>, () <span style=color:#ff79c6>=&gt;</span> {
+</span></span><span style=display:flex><span>  it(<span style=color:#f1fa8c>&#34;Should return with &#34;</span>, <span style=color:#ff79c6>async</span> () <span style=color:#ff79c6>=&gt;</span> {
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>await</span> expect(usersController.findOne(<span style=color:#f1fa8c>&#34;5&#34;</span>)).resolves.toBe(testUser1);
+</span></span><span style=display:flex><span>  });
+</span></span><span style=display:flex><span>  it(<span style=color:#f1fa8c>&#34;Should throw a NotFoundException when there is no user&#34;</span>, <span style=color:#ff79c6>async</span> () <span style=color:#ff79c6>=&gt;</span> {
+</span></span><span style=display:flex><span>    jest
+</span></span><span style=display:flex><span>      .spyOn(usersService, <span style=color:#f1fa8c>&#34;findOne&#34;</span>)
+</span></span><span style=display:flex><span>      .mockImplementation(<span style=color:#ff79c6>async</span> (id: <span style=color:#8be9fd>number</span>) <span style=color:#ff79c6>=&gt;</span> {
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>return</span> <span style=color:#ff79c6>null</span>;
+</span></span><span style=display:flex><span>      });
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>try</span> {
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>await</span> usersController.findOne(<span style=color:#f1fa8c>&#34;5&#34;</span>);
+</span></span><span style=display:flex><span>    } <span style=color:#ff79c6>catch</span> (e) {
+</span></span><span style=display:flex><span>      expect(e).toBeInstanceOf(NotFoundException);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>  });
+</span></span><span style=display:flex><span>});
+</span></span></code></pre></div><h3 id=usersservice>UsersService</h3><p>Here, we will focus on the <code>create</code> method for creating a new user. The method itself can result in two distinct behaviours. If the username is not already taken, the service will call upon the <code>PrismaService</code> to persist the data into the DB. If it is already taken, the <code>PrismaService</code> will throw a known exception. The <code>create</code> method catches the exception and processes it by deleting the uploaded picture. It will throw a <code>ConflictException</code> which will cause Nest to return a 409 response to the HTTP request.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=display:flex><span><span style=color:#ff79c6>async</span> create(createUserDto: <span style=color:#8be9fd>CreateUserDto</span>, profilePhotoUrl: <span style=color:#8be9fd>string</span>) {
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>const</span> dto <span style=color:#ff79c6>=</span> { ...createUserDto, profilePhotoUrl: <span style=color:#8be9fd>profilePhotoUrl</span> };
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>try</span> {
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>return</span> <span style=color:#ff79c6>await</span> <span style=color:#ff79c6>this</span>.prismaService.user.create({ data: <span style=color:#8be9fd>dto</span> });
+</span></span><span style=display:flex><span>  } <span style=color:#ff79c6>catch</span> (e) {
+</span></span><span style=display:flex><span>    <span style=color:#6272a4>// NOTE: If the user already exists, Prisma throws a ClientKnownRequestError
+</span></span></span><span style=display:flex><span><span style=color:#6272a4></span>    <span style=color:#6272a4>// with the P2002 code. In this case we need to delete the image that Multer saved
+</span></span></span><span style=display:flex><span><span style=color:#6272a4></span>    <span style=color:#6272a4>// and return a exception.
+</span></span></span><span style=display:flex><span><span style=color:#6272a4></span>    <span style=color:#ff79c6>if</span> (e <span style=color:#ff79c6>instanceof</span> Prisma.PrismaClientKnownRequestError) {
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>if</span> (e.code <span style=color:#ff79c6>==</span> <span style=color:#f1fa8c>&#39;P2002&#39;</span>) {
+</span></span><span style=display:flex><span>        unlink(<span style=color:#f1fa8c>`uploads/</span><span style=color:#f1fa8c>${</span>profilePhotoUrl<span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>`</span>, (err) <span style=color:#ff79c6>=&gt;</span> {
+</span></span><span style=display:flex><span>          <span style=color:#ff79c6>if</span> (err) <span style=color:#ff79c6>throw</span> err;
+</span></span><span style=display:flex><span>          <span style=color:#ff79c6>else</span> console.log(<span style=color:#f1fa8c>`uploads/</span><span style=color:#f1fa8c>${</span>profilePhotoUrl<span style=color:#f1fa8c>}</span><span style=color:#f1fa8c> deleted.`</span>);
+</span></span><span style=display:flex><span>        });
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>throw</span> <span style=color:#ff79c6>new</span> ConflictException(<span style=color:#f1fa8c>&#39;Username already exists.&#39;</span>);
+</span></span><span style=display:flex><span>      }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>The test below shows how to test the service behaviour if the username is already taken. Again, we make use of the <code>jest.SpyOn()</code> function, however here we assign it to a constant which can be used for assertions. We mock the <code>fs.unlink</code> function since it is used to delete the image. The same is done for the <code>prismaService.user.create</code> function. We mock the implementation so that it throws the expected error (<em>which we define somewhere earlier in the test</em>). Since we know that <code>PrismaService</code> will throw an exception, we expect the <code>UsersService</code> to call <code>unlink</code> and throw a <code>ConflictException</code>.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=display:flex><span>...
+</span></span><span style=display:flex><span><span style=color:#ff79c6>const</span> prismaErrorMock <span style=color:#ff79c6>=</span> <span style=color:#ff79c6>new</span> PrismaClientKnownRequestError(<span style=color:#f1fa8c>&#39;&#39;</span>, <span style=color:#f1fa8c>&#39;P2002&#39;</span>, <span style=color:#f1fa8c>&#39;&#39;</span>);
+</span></span><span style=display:flex><span>...
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>describe(<span style=color:#f1fa8c>&#39;Create&#39;</span>, () <span style=color:#ff79c6>=&gt;</span> {
+</span></span><span style=display:flex><span>  ...
+</span></span><span style=display:flex><span>  it(<span style=color:#f1fa8c>&#39;Should throw a ConflictException if username is taken.&#39;</span>, <span style=color:#ff79c6>async</span> () <span style=color:#ff79c6>=&gt;</span> {
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>const</span> params <span style=color:#ff79c6>=</span> { ...testCreateUserDto, profilePhotoUrl: <span style=color:#8be9fd>testPhotoUrl</span> };
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>const</span> fsSpy <span style=color:#ff79c6>=</span> jest.spyOn(fs, <span style=color:#f1fa8c>&#39;unlink&#39;</span>).mockImplementation(() <span style=color:#ff79c6>=&gt;</span> {
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>return</span> <span style=color:#ff79c6>true</span>;
+</span></span><span style=display:flex><span>    });
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>const</span> dbSpy <span style=color:#ff79c6>=</span> jest
+</span></span><span style=display:flex><span>      .spyOn(prismaService.user, <span style=color:#f1fa8c>&#39;create&#39;</span>)
+</span></span><span style=display:flex><span>      .mockImplementationOnce((data) <span style=color:#ff79c6>=&gt;</span> {
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>throw</span> prismaErrorMock;
+</span></span><span style=display:flex><span>      });
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>try</span> {
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>await</span> usersService.create(testCreateUserDto, testPhotoUrl);
+</span></span><span style=display:flex><span>    } <span style=color:#ff79c6>catch</span> (e) {
+</span></span><span style=display:flex><span>      expect(dbSpy).toHaveBeenCalledWith({ data: <span style=color:#8be9fd>params</span> });
+</span></span><span style=display:flex><span>      expect(fsSpy).toHaveBeenCalled();
+</span></span><span style=display:flex><span>      expect(e).toBeInstanceOf(ConflictException);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>  });
+</span></span><span style=display:flex><span>});
+</span></span></code></pre></div><h1 id=documentation>Documentation</h1><p>Documentation is done using the NestJS Swagger module. The documentation generated conforms to the <em>OpenAPI</em> specification & can be exported to other formats such as JSON or YAML. The module provides annotations that we can use for API endpoints & DTOs. We can see a couple of them below.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=display:flex><span><span style=color:#8be9fd;font-style:italic>@Get</span>(<span style=color:#f1fa8c>&#39;:id&#39;</span>)
+</span></span><span style=display:flex><span><span style=color:#8be9fd;font-style:italic>@ApiResponse</span>({
+</span></span><span style=display:flex><span>  status: <span style=color:#8be9fd>200</span>,
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>type</span><span style=color:#ff79c6>:</span> UserDto,
+</span></span><span style=display:flex><span>  description<span style=color:#ff79c6>:</span>
+</span></span><span style=display:flex><span>    <span style=color:#f1fa8c>&#39;Returns the general info (UserDto) about the user specified in the parameter.&#39;</span>,
+</span></span><span style=display:flex><span>})
+</span></span><span style=display:flex><span><span style=color:#8be9fd;font-style:italic>@ApiResponse</span>({
+</span></span><span style=display:flex><span>  status: <span style=color:#8be9fd>404</span>,
+</span></span><span style=display:flex><span>  description<span style=color:#ff79c6>:</span>
+</span></span><span style=display:flex><span>    <span style=color:#f1fa8c>&#34;If there is no user with the defined ID, the API responds with a 404 that has the message &#39;User not found.&#39;&#34;</span>,
+</span></span><span style=display:flex><span>})
+</span></span><span style=display:flex><span><span style=color:#ff79c6>async</span> findOne(<span style=color:#8be9fd;font-style:italic>@Param</span>(<span style=color:#f1fa8c>&#39;id&#39;</span>) id: <span style=color:#8be9fd>string</span>)<span style=color:#ff79c6>:</span> Promise&lt;<span style=color:#ff79c6>UserDto</span>&gt; {
+</span></span><span style=display:flex><span>  <span style=color:#6272a4>/* ... */</span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=display:flex><span><span style=color:#ff79c6>export</span> <span style=color:#ff79c6>class</span> UserDto {
+</span></span><span style=display:flex><span>  <span style=color:#8be9fd;font-style:italic>@ApiProperty</span>()
+</span></span><span style=display:flex><span>  userId: <span style=color:#8be9fd>number</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#8be9fd;font-style:italic>@ApiProperty</span>()
+</span></span><span style=display:flex><span>  username: <span style=color:#8be9fd>string</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#8be9fd;font-style:italic>@ApiProperty</span>()
+</span></span><span style=display:flex><span>  email: <span style=color:#8be9fd>string</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#8be9fd;font-style:italic>@ApiProperty</span>()
+</span></span><span style=display:flex><span>  firstName: <span style=color:#8be9fd>string</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#8be9fd;font-style:italic>@ApiProperty</span>()
+</span></span><span style=display:flex><span>  lastName: <span style=color:#8be9fd>string</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#8be9fd;font-style:italic>@ApiProperty</span>({
+</span></span><span style=display:flex><span>    description<span style=color:#ff79c6>:</span>
+</span></span><span style=display:flex><span>      <span style=color:#f1fa8c>&#34;Contains the name of the profile photo in the /uploads folder.&#34;</span>,
+</span></span><span style=display:flex><span>  })
+</span></span><span style=display:flex><span>  profilePhotoUrl: <span style=color:#8be9fd>string</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#8be9fd;font-style:italic>@ApiProperty</span>()
+</span></span><span style=display:flex><span>  bio: <span style=color:#8be9fd>string</span>;
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div></p></div></div><div class=toc-container><aside class=table-of-contents><h3>Contents:</h3><header><a href=#nestjs-api><h3>NestJS API</h3></a></header><nav id=TableOfContents><ul><li><a href=#data-info>Data info</a></li><li><a href=#testing>Testing</a><ul><li><a href=#unit-tests>Unit Tests</a><ul><li><a href=#userscontroller>UsersController</a></li><li><a href=#usersservice>UsersService</a></li></ul></li></ul></li><li><a href=#documentation>Documentation</a></li></ul></nav></aside></div></div></article></section></div><script src=/js/navbar.js></script>
+<script>feather.replace()</script></body></html>
