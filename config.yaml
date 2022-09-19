@@ -1,0 +1,55 @@
+baseURL: 'http://example.org/'
+languageCode: en-us
+title: fish-dev
+theme: fs-theme
+markup:
+  tableOfContents:
+    endLevel: 4
+    ordered: false
+    startLevel: 1
+  highlight:
+    anchorLineNos: false
+    codeFences: true
+    guessSyntax: false
+    hl_Lines: ""
+    hl_inline: false
+    lineAnchors: ""
+    lineNoStart: 1
+    lineNos: false
+    lineNumbersInTable: false
+    noClasses: true
+    noHl: false
+    style: dracula
+    tabWidth: 4
+menu:
+  main:
+    - identifier: "posts"
+      name: "posts"
+      url: "/posts/"
+    - identifier: "projects"
+      name: "projects"
+      url: "/projects/"
+
+Params:
+  user:
+    username: "Filip Šošić"
+    shortDescription: "software engineer & student"
+    userImage: "/images/profile.jpeg"
+  contact:
+    - text: linkedin
+      link: "https://linkedin.com/in/filip-šošić-34ab55228"
+    - text: github
+      link: "https://github.com/pina771"
+  email: "filip.katarina@gmail.com"
+  stack:
+    - framework: "React & Vue"
+      description: "for front-end development."
+    - framework: "Sass & Tailwind"
+      description: "for styling & CSS."
+    - framework: "Express & NestJS"
+      description: "for back-end development."
+    - framework: "PostgreSQL"
+      description: "is my database of choice since I prefer relational DBs."
+    - framework: "Go"
+      description: "is in future plans."
+  siteDescription: "Personal site for sharing opinions about software development and showcasing projects. Powered by Hugo."

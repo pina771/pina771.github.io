@@ -1,0 +1,164 @@
+@use "./vars" as *;
+@use "./mixins" as *;
+.single-container {
+  display: flex;
+  justify-content: center;
+  padding: 12px;
+
+  .toc-container {
+    position: relative;
+    @include not-laptop {
+      display: none;
+    }
+
+    .table-of-contents {
+      position: sticky;
+      top: 20%;
+      left: 0;
+      padding: 24px;
+      background-color: $light-text-highlight;
+      border-radius: 12px;
+
+      a {
+        text-decoration: none;
+        color: $light-accent-blue;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+      ul {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        li {
+          margin-left: 12px;
+        }
+      }
+    }
+  }
+}
+.article-full {
+  max-width: $article-width;
+  width: 100%;
+  padding: 24px;
+  color: $light-text;
+  position: relative;
+
+  .article-title {
+    h1 {
+      font-size: $font-xxl;
+    }
+    @include mobile {
+      h1 {
+        font-size: $font-xl;
+      }
+    }
+    color: $light-text;
+    border-bottom: 2px solid $light-accent-blue;
+    max-width: 80%;
+  }
+
+  .article-content {
+    margin-top: 12px;
+    font-size: $font-text;
+    line-height: 1.4em;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    p {
+      color: $light-text;
+      code {
+        /* For inline-code */
+        background-color: $light-text-highlight;
+        font-family: "Fira Code", monospace;
+        padding: 0 4px;
+        font-size: 16px;
+      }
+    }
+
+    .fig-container {
+    }
+    // TODO: Stilizirati liste u article-content
+    /* ul {
+      list-style: none;
+      li {
+        margin: 4px 0 0 0;
+      }
+    }
+ */
+    table {
+      text-align: left;
+      color: $light-text;
+      border-collapse: collapse;
+      max-width: 90%;
+      width: 100%;
+      margin: auto;
+      thead {
+        color: $light-accent-blue;
+        th {
+          border-bottom: 2px solid $light-accent-blue;
+        }
+      }
+      tbody {
+        tr > td {
+          padding: 8px;
+        }
+        tr:nth-child(even) {
+          background-color: $light-text-highlight;
+        }
+      }
+    }
+
+    .highlight {
+      overflow-x: auto;
+      color: #f8f8f2;
+      background-color: #282a36;
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 14px;
+      pre {
+        span {
+          font-family: "Fira Code", monospace;
+        }
+      }
+    }
+
+    a {
+      font-family: "Fira Code", monospace;
+      text-decoration: underline;
+      color: $light-text;
+      &:hover {
+        font-weight: bold;
+      }
+    }
+
+    h1 {
+      font-size: $font-xl;
+    }
+    figure {
+      display: block;
+      margin: auto;
+      @include mobile {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        img {
+          width: 100%;
+          object-fit: cover;
+        }
+      }
+
+      figcaption {
+        font-size: $font-normal;
+        text-align: center;
+        h4 {
+          font-weight: normal;
+          color: $light-caption-text;
+          font-style: italic;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+<figure class="fig-container">
+  {{ $src := .Get "src" }}
+  {{ $image := .Page.Resources.GetMatch $src }}
+  {{ if
+    (.Get "width")
+  }}
+    {{ $image = $image.Resize (printf "%sx" (.Get "width")) }}
+  {{ else }}
+    {{ $image = $image.Resize "640x" }}
+  {{ end }}
+  <img src="{{ $image.RelPermalink }}" alt="" />
+  <figcaption>
+    <h4>{{ $.Get "caption" }}</h4>
+  </figcaption>
+</figure>

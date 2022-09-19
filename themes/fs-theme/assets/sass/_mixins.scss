@@ -1,0 +1,17 @@
+@use "./vars" as *;
+@mixin mobile {
+  @media screen and (max-width: 600px) {
+    @content;
+  }
+}
+@mixin not-laptop {
+  @media screen and (max-width: $device-tablet-width) {
+    @content;
+  }
+}
+
+@mixin hide-toc {
+  @media screen and (max-width: $article-width) {
+    @content;
+  }
+}

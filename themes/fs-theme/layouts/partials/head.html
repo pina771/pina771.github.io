@@ -1,0 +1,68 @@
+<head>
+  <meta charset="utf-8" />
+  {{ $favicon := resources.Get "icons/favicon-16x16.png" }}
+  {{ $favicon32 :=
+    resources.Get "icons/favicon-32x32.png"
+  }}
+  {{ $appleTouchIcon := resources.Get
+    "icons/apple-touch-icon.png"
+  }}
+  {{ $manifest := resources.Get
+    "icons/site.webmanifest"
+  }}
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="16x16"
+    href="{{ $favicon.RelPermalink }} "
+  />
+
+  <link
+    rel="apple-touch-icon"
+    sizes="180x180"
+    href="{{ $appleTouchIcon.RelPermalink }}"
+  />
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="32x32"
+    href="{{ $favicon32.RelPermalink }}"
+  />
+
+  <link rel="manifest" href="{{ $manifest.RelPermalink }} " />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="{{ .Site.Params.SiteDescription }}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Roboto:wght@100;400;700;900&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: "Roboto", sans-serif;
+    }
+    html,
+    body {
+      height: 100%;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+  </style>
+
+  {{ $stylesheet := resources.Get "sass/main.scss" | resources.ToCSS (dict
+    "outputStyle" "compressed" "transpiler" "dartsass")
+  }}
+  <link rel="stylesheet" href="{{ $stylesheet.Permalink }}" />
+  <script src="/js/feather.min.js"></script>
+  {{ $title := print .Site.Title " | " .Title }}
+  {{ if .IsHome }}
+    {{ $title =
+      .Site.Title
+    }}
+  {{ end }}
+  <title>{{ $title }}</title>
+</head>

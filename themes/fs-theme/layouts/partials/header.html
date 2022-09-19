@@ -1,0 +1,14 @@
+<!-- U partialu moramo koristiti funkciju site da dobijemo
+kontekst stranice, a ne objekt .Site kao inače -->
+<nav class="navbar" id="navbar">
+  <ul>
+    <li>
+      <a href="/"><i data-feather="home"></i></a>
+    </li>
+    {{ range site.Menus.main }}
+      <li>
+        <a href="{{ .URL }}">{{ .Name }}</a>
+      </li>
+    {{ end }}
+  </ul>
+</nav>

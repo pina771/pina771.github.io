@@ -1,0 +1,49 @@
+{{ define "main" }}
+  <main class="list-main">
+    <div class="list-index">
+      <h1>{{ .Title }}</h1>
+      <p>{{ .Page.Content }}</p>
+      {{ if (not  .Pages) }}
+        <p class="empty-message">
+          <i>
+            It is currently empty. Surely there is something work-in-progress.
+          </i>
+        </p>
+      {{ end }}
+    </div>
+    <div class="list-pages">
+      <ul class="list-pages-ul">
+        {{ range .Pages }}
+          <li class="list-pages-li">
+            <article class="list-article">
+              <div class="article-title">
+                <a href="{{ .RelPermalink }}">
+                  <h2>{{ .Title }}</h2>
+                </a>
+                <h4>
+                  {{ .PublishDate.Local | time.Format "January 2, 2006" }}
+                </h4>
+              </div>
+              <p>{{ .Summary }}</p>
+              <div class="article-bottom">
+                <ul class="article-tags">
+                  {{ range (.GetTerms "tags") }}
+                    <li>
+                      <a class="tag-link" href="{{ .Permalink }}"
+                        >{{ .LinkTitle }}</a
+                      >
+                    </li>
+                  {{ end }}
+                </ul>
+
+                <a class="read-full-link" href="{{ .RelPermalink }}">
+                  Read full <i data-feather="arrow-right"></i>
+                </a>
+              </div>
+            </article>
+          </li>
+        {{ end }}
+      </ul>
+    </div>
+  </main>
+{{ end }}

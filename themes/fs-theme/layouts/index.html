@@ -1,0 +1,49 @@
+{{ define "main" }}
+<div class="main">
+  <div class="top">
+    <div class="info">
+      <h3>hello, I'm</h3>
+      <h1>{{ site.Params.user.username}}</h1>
+      <h3>{{ site.Params.user.shortDescription}}</h3>
+    </div>
+
+    <div class="image-container">
+      {{$imageSrc := resources.Get site.Params.user.userImage }}
+      <img src="{{ $imageSrc.RelPermalink }}" alt="" />
+      <div class="image-flair"></div>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <div class="bottom-left">
+      <div class="description-long">{{ .Content }}</div>
+
+      <div class="stack">
+        <div class="stack-title">
+          <i data-feather="layers"></i>
+          <h4>&nbsp;what I like to use</h4>
+        </div>
+        <ul>
+          {{ range site.Params.stack }}
+          <li>
+            <span class="stack-highlight">{{ .framework }}</span>
+            {{.description}}
+          </li>
+          {{ end }}
+        </ul>
+      </div>
+    </div>
+    <div class="contact">
+      <h4>reach me!</h4>
+      <ul>
+        {{ range site.Params.contact}}
+        <li><a href="{{ .link }}">{{.text}}</a></li>
+        {{end}}
+        <li>
+          <a href="mailto:{{ site.Params.email }}">{{site.Params.email}} </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+{{ end }}
