@@ -54,7 +54,7 @@
   </style>
 
   {{ $stylesheet := resources.Get "sass/main.scss" | resources.ToCSS (dict
-    "outputStyle" "compressed")
+    "outputStyle" "compressed" )
   }}
   <link rel="stylesheet" href="{{ $stylesheet.Permalink }}" />
   <script src="/js/feather.min.js"></script>

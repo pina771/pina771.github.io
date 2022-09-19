@@ -1,3 +1,5 @@
+@import "./vars";
+@import "./mixins";
 .navbar {
   padding: 16px 0 0 0;
   width: 100%;
@@ -24,8 +26,8 @@
         text-decoration: none;
         font-family: "Fira Code", monospace;
         border-radius: 12px;
-        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
-          0 4px 6px -4px rgb(0 0 0 / 0.1);
+        box-shadow: 0 10px 15px -3px RGB(0 0 0 / 0.1),
+          0 4px 6px -4px RGB(0 0 0 / 0.1);
 
         transition: background-color 0.2s ease;
 
