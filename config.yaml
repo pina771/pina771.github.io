@@ -50,6 +50,6 @@ Params:
       description: "for back-end development."
     - framework: "PostgreSQL"
       description: "is my database of choice since I prefer relational DBs."
-    - framework: "Go"
-      description: "is in future plans."
+    - framework: "Kotlin"
+      description: "for native Android development."
   siteDescription: "Personal site for sharing opinions about software development and showcasing projects. Powered by Hugo."

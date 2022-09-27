@@ -12,7 +12,7 @@ Showcase RESTful API made with NestJS & TypeScript. [GitHub](https://github.com/
 
 _Writeup is currently in progress. Some more details could be added._
 
-Made mainly for backend practice with NestJS & practicing TypeScript. A full CRUD API with authentication & file upload. Really, it's a rudimentary Instagram clone.
+Made mainly for backend practice with NestJS & practicing TypeScript. A full CRUD API with authentication & file upload. Really, it's a rudimentary Instagram clone. Similiar to another project done as a university assignment ([CNR-api](https://github.com/pina771/cnr-api))
 The projects consists of the following stack:
 | | |
 |---------------- |------------------ |
